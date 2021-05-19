@@ -112,6 +112,33 @@ Tolk.config do |config|
 end
 ```
 
+### Using google translate
+
+You can use Tolk to leverage google translate to translate your locale string. To enable google translate you will need to add ['google-cloud-translate'](https://github.com/googleapis/google-cloud-ruby/tree/master/google-cloud-translate) to your project's Gemfile.
+
+```ruby
+  gem 'google-cloud-translate'
+```
+
+In order to use this feature, you will need to setup Google Cloud Platform account, you can follow [Quick Start](https://github.com/googleapis/google-cloud-ruby/tree/master/google-cloud-translate#quick-start) guide to get necessary information. 
+
+```ruby
+# config/initializers/tolk.rb
+Tolk.config do |config|
+  config.translate_project_id = nil
+  # Google Cloud Platform project id
+
+  config.translate_location_id = nil
+  # Google Cloud Platform project's location id
+
+  config.translate_auth_json_location = nil
+  # Google Cloud Platform authentication JSON location
+end
+```
+
+Once all this is done, you will be able to use google translate to translate your whole app. 
+
+
 ### Translation statistics
 
 You can ask statistics about missing or updated translations to be tracked for third party tools in `http://your_app.com/tolk/stats.json` endpoint.

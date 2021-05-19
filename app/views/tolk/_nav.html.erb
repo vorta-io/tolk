@@ -16,11 +16,11 @@
   %>
   <a href="<%= locale_path(@locale) %>" <% if current == 'missing' %>class="current"<% end %>>
     Phrases missing translation
-    <span class="nav__badge"><%= phrases_without_translation_count %></span>
+    <span class="nav__badge js-without-translation-count"><%= phrases_without_translation_count %></span>
   </a>
   <a href="<%= all_locale_path(@locale) %>" <% if current == 'completed' %>class="current"<% end %>>
     Completed translations
-    <span class="nav__badge"><%= completed_translations_count %></span>
+    <span class="nav__badge js-completed-translation-count"><%= completed_translations_count %></span>
   </a>
   <a href="<%= google_translate_locale_path(@locale) %>" <% if current == 'google_translate' %>class="current"<% end %>>
     Google translate

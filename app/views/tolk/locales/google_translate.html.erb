@@ -4,11 +4,30 @@
   <div class="banner">
     <span>You are about to send <b><%= @locale.count_phrases_without_translation %></b> phrases to be translated on Google Translation API. Once this is done, you will be able to view finished translation on completed translation tab.
 
-    <br />
-    <br />
-    <br />
+    <div class="container-progress">
+      <div class="card">
+        <div class="box">
+          <div class="percent">
+            <svg>
+              <circle cx="70" cy="70" r="70"></circle>
+              <circle cx="70" cy="70" r="70"></circle>
+            </svg>
+            <div class="num">
+              <h2 class="js-percent-completed" data-initial-value=<%= @completed_percentage %>><%= @completed_percentage %><span>%</span></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sentences">
+        <span>In the meantime all instances have been marked as finished, lead time update is not available anymore</span>
+        <span class="spacer">↓</span>
+        <span>U međuvremenu su sve instance označene kao gotove, ažuriranje vremena isporuke više nije dostupno</span>
+      </div>
+    </div>
 
 
     <button class="btn js-start-batch-translation" data-url="<%= start_translation_locale_path(@locale) %>">Start the translation</button>
+    <button class="btn js-stop-batch-translation" style="display: none;">Stop the translation</button>
+
   </div>
 </div>

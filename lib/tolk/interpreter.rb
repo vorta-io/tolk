@@ -40,7 +40,6 @@ module Tolk
         if primary_text.is_a?(Hash)
           # hashes will be saved as translation due to complexity that they bring and are rarely used
           phrase.translations.create(text: primary_text, locale_id: locale.id)
-          ap "HASH SAVED!!!"
           next
         end
 

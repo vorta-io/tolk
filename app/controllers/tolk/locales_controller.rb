@@ -4,6 +4,7 @@ module Tolk
   class LocalesController < Tolk::ApplicationController
     before_action :find_locale, :only => [:show, :all, :update, :updated, :google_translate, :start_translation]
     before_action :set_translation_interpreter, :only => [:google_translate, :start_translation]
+    before_action :calculate_percentage, :only => [:google_translate, :start_translation]
     before_action :ensure_no_primary_locale, :only => [:all, :update, :show, :updated]
 
     def index
@@ -40,7 +41,13 @@ module Tolk
     end
 
     def start_translation
-      @interpreter.start_translation(@locale)
+      sentences = @interpreter.start_translation(@locale)
+
+      render json: {
+        phrases_without_translation_count: @phrases_without_translation_count,
+        completed_translations_count: @completed_translations_count,
+        percentage_completed: @completed_percentage
+      }
     end
 
     def updated
@@ -78,6 +85,12 @@ module Tolk
     end
 
     private
+
+    def calculate_percentage
+      @phrases_without_translation_count = @locale.count_phrases_without_translation
+      @completed_translations_count = Tolk::Phrase.count - @phrases_without_translation_count
+      @completed_percentage = ((@completed_translations_count.to_f / Tolk::Phrase.count) * 100).round(0)
+    end
 
     def find_locale
       @locale = Tolk::Locale.where('UPPER(name) = UPPER(?)', params[:id]).first!
