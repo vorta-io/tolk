@@ -19,6 +19,7 @@ function send_translation_request(url) {
     success: function (response) {
       $('.js-completed-translation-count').html(response.completed_translations_count);
       $('.js-without-translation-count').html(response.phrases_without_translation_count);
+      setPercentage(response.percentage_completed);
 
       if (processing) {
         send_translation_request(url);

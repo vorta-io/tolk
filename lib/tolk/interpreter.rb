@@ -30,7 +30,7 @@ module Tolk
     end
 
     def start_translation(locale)
-      phrases = locale.phrases_without_translation().per(40)
+      phrases = locale.phrases_without_translation().per(20)
       for_translation = []
 
       phrases.each do |phrase|
@@ -39,7 +39,7 @@ module Tolk
 
         if primary_text.is_a?(Hash)
           # hashes will be saved as translation due to complexity that they bring and are rarely used
-          phrase.translations.create(text: primary_text, locale_id: locale.id)
+          phrase.translations.create(text: phrase.translations.primary, locale_id: locale.id)
           next
         end
 
@@ -88,7 +88,6 @@ module Tolk
         ap clean_text(object.translated_text)
         ap ">>>>>>>>>>>>>>>>>>>>>>>>"
       end
-
 
 
       locale.translations_attributes = translations
