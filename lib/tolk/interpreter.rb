@@ -19,6 +19,7 @@ module Tolk
 
     def prepare_text(original_text)
       # when interpolation is used it will be wrapped into span for skipping translation
+      return original_text unless original_text.is_a?(String)
       original_text.gsub(INTERPOLATION_DETECTION, "<span class='notranslate'>\\1</span>")
     end
 
@@ -30,16 +31,27 @@ module Tolk
     end
 
     def start_translation(locale)
-      phrases = locale.phrases_without_translation().per(20)
+      phrases = locale.phrases_without_translation().per(80)
       for_translation = []
 
       phrases.each do |phrase|
+        unless phrase.translations.any?
+          # if there is phrase without translations we consider it invalid and as such is deleted
+          phrase.destroy
+          next
+        end
+
+        unless phrase.translations.primary
+          next
+        end 
+
         primary_text = phrase.translations.primary.text
 
-
-        if primary_text.is_a?(Hash)
+        if primary_text.is_a?(Hash) || primary_text.is_a?(TrueClass) || primary_text.is_a?(FalseClass)
           # hashes will be saved as translation due to complexity that they bring and are rarely used
-          phrase.translations.create(text: phrase.translations.primary, locale_id: locale.id)
+          primary_translation_dup = phrase.translations.primary.dup
+          primary_translation_dup.locale_id = locale.id
+          primary_translation_dup.save
           next
         end
 
@@ -89,9 +101,13 @@ module Tolk
         ap ">>>>>>>>>>>>>>>>>>>>>>>>"
       end
 
-
-      locale.translations_attributes = translations
-      locale.save
+      begin
+        locale.translations_attributes = translations
+        locale.save
+      rescue Exception => e
+        Rails.logger.info("Failed to execute batch update of translations: #{e.message}")
+        return []
+      end
     end
   end
 end

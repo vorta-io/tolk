@@ -22,7 +22,11 @@ function send_translation_request(url) {
       setPercentage(response.percentage_completed);
 
       if (processing) {
-        send_translation_request(url);
+        setTimeout(
+          function() 
+          {
+            send_translation_request(url);
+          }, 3000);
       }
     }
   })
